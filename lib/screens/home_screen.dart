@@ -1,9 +1,53 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav.dart';
-import 'product_detail_screen.dart'; // <-- Make sure this import is correct
+import 'product_detail_screen.dart';
+import 'cart_screen.dart'; // Import the CartScreen
+
+class Product {
+  final String name;
+  final String imageUrl;
+  final double price;
+  final double rating;
+
+  Product({
+    required this.name,
+    required this.imageUrl,
+    required this.price,
+    required this.rating,
+  });
+}
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final List<Product> _homeScreenProducts = [
+    Product(
+      name: 'Fresh Carrots',
+      imageUrl: 'https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg',
+      price: 1.99,
+      rating: 4.5,
+    ),
+    Product(
+      name: 'Organic Tomatoes',
+      imageUrl:
+      'https://images.pexels.com/photos/1367242/pexels-photo-1367242.jpeg',
+      price: 2.49,
+      rating: 4.8,
+    ),
+    Product(
+      name: 'Fresh Onions',
+      imageUrl: 'https://images.pexels.com/photos/175414/pexels-photo-175414.jpeg',
+      price: 1.29,
+      rating: 4.6,
+    ),
+    Product(
+      name: 'Fresh Potatoes',
+      imageUrl:
+      'https://images.pexels.com/photos/144248/potatoes-vegetables-erdfrucht-bio-144248.jpeg',
+      price: 1.59,
+      rating: 4.7,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +63,12 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {
-              // Navigate to cart screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CartScreen(
+                        homeScreenProducts: _homeScreenProducts)), // Pass the product list
+              );
             },
           ),
         ],
@@ -100,40 +149,9 @@ class HomeScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 3 / 4,
-              children: [
-                _buildProductCard(
-                  context,
-                  name: 'Fresh Carrots',
-                  imageUrl:
-                  'https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg',
-                  price: 1.99,
-                  rating: 4.5,
-                ),
-                _buildProductCard(
-                  context,
-                  name: 'Organic Tomatoes',
-                  imageUrl:
-                  'https://images.pexels.com/photos/1367242/pexels-photo-1367242.jpeg',
-                  price: 2.49,
-                  rating: 4.8,
-                ),
-                _buildProductCard(
-                  context,
-                  name: 'Fresh Onions',
-                  imageUrl:
-                  'https://images.pexels.com/photos/175414/pexels-photo-175414.jpeg',
-                  price: 1.29,
-                  rating: 4.6,
-                ),
-                _buildProductCard(
-                  context,
-                  name: 'Fresh Potatoes',
-                  imageUrl:
-                  'https://images.pexels.com/photos/144248/potatoes-vegetables-erdfrucht-bio-144248.jpeg',
-                  price: 1.59,
-                  rating: 4.7,
-                ),
-              ],
+              children: _homeScreenProducts
+                  .map((product) => _buildProductCard(context, product: product))
+                  .toList(),
             ),
           ],
         ),
@@ -142,11 +160,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(BuildContext context,
-      {required String name,
-        required String imageUrl,
-        required double price,
-        required double rating}) {
+  Widget _buildProductCard(BuildContext context, {required Product product}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -154,10 +168,10 @@ class HomeScreen extends StatelessWidget {
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
             pageBuilder: (_, __, ___) => ProductDetailScreen(
-              name: name,
-              imageUrl: imageUrl,
-              price: price,
-              rating: rating,
+              name: product.name,
+              imageUrl: product.imageUrl,
+              price: product.price,
+              rating: product.rating,
             ),
           ),
         );
@@ -171,12 +185,12 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Hero(
-              tag: imageUrl,
+              tag: product.imageUrl,
               child: ClipRRect(
                 borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.network(
-                  imageUrl,
+                  product.imageUrl,
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -188,11 +202,11 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name,
+                  Text(product.name,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
-                  Text('\$${price.toStringAsFixed(2)}',
+                  Text('\$${product.price.toStringAsFixed(2)}',
                       style:
                       const TextStyle(fontSize: 14, color: Colors.green)),
                   const SizedBox(height: 4),
@@ -200,7 +214,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.star, color: Colors.orange, size: 16),
                       const SizedBox(width: 4),
-                      Text(rating.toString(),
+                      Text(product.rating.toString(),
                           style: const TextStyle(fontSize: 14)),
                     ],
                   ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'signup_screen.dart';
+import 'signup_screen.dart'; // Import the SignUpScreen
 
 class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -10,13 +12,12 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Clean background color
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Sign In"),
         backgroundColor: Colors.transparent,
@@ -28,7 +29,6 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome message
             const Text(
               "Welcome Back 👋",
               style: TextStyle(
@@ -38,8 +38,6 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             const SizedBox(height: 40),
-
-            // Email input field
             _buildTextField(
               'Email',
               'Enter your email address',
@@ -47,21 +45,19 @@ class _AuthScreenState extends State<AuthScreen> {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
-
-            // Password input field
             _buildPasswordField(
               'Password',
               'Enter your password',
               passwordController,
             ),
             const SizedBox(height: 20),
-
-            // Forgot Password button
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
                 onTap: () {
                   // Implement Forgot Password functionality here
+                  // For example:
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
                 },
                 child: const Text(
                   "Forgot Password?",
@@ -70,21 +66,18 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             const SizedBox(height: 30),
-
-            // Login Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  // Navigate to the HomeScreen upon successful login.
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ),
                   );
                 },
-                child: const Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -93,11 +86,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   elevation: 2,
                 ),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(height: 20),
-
-            // Sign Up Text and button
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +102,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                      MaterialPageRoute(
+                        builder: (_) =>
+                        const SignUpScreen(), // Use the imported SignUpScreen
+                      ),
                     );
                   },
                   child: const Text("Sign Up", style: TextStyle(color: Colors.green)),
@@ -146,7 +144,8 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             filled: true,
             fillColor: Colors.grey[200],
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
@@ -178,7 +177,8 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             filled: true,
             fillColor: Colors.grey[200],
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -196,3 +196,4 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 }
+
