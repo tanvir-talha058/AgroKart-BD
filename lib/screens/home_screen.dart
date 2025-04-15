@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav.dart';
 import 'product_detail_screen.dart';
-import 'cart_screen.dart'; // Import the CartScreen
+import 'cart_screen.dart';
 
 class Product {
   final String name;
@@ -17,9 +17,14 @@ class Product {
   });
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
 
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final List<Product> _homeScreenProducts = [
     Product(
       name: 'Fresh Carrots',
@@ -48,6 +53,33 @@ class HomeScreen extends StatelessWidget {
       rating: 4.7,
     ),
   ];
+
+  List<Product> _filteredProducts = [];
+  TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredProducts = _homeScreenProducts;
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredProducts = _homeScreenProducts
+          .where((product) =>
+      product.name.toLowerCase().contains(query) ||
+          product.name.toLowerCase().startsWith(query))
+          .toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +110,25 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           children: [
             TextField(
+              controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search',
+                hintText: 'Search for products',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            if (_searchController.text.isNotEmpty) ...[
+              // Show the search suggestions when the search field is not empty
+              Text(
+                'Search Suggestions',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              _buildSearchSuggestions(),
+            ],
             const SizedBox(height: 16),
             Container(
               height: 150,
@@ -149,7 +192,7 @@ class HomeScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 3 / 4,
-              children: _homeScreenProducts
+              children: _filteredProducts
                   .map((product) => _buildProductCard(context, product: product))
                   .toList(),
             ),
@@ -224,6 +267,49 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  // Custom widget for search suggestions
+  Widget _buildSearchSuggestions() {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _filteredProducts.length,
+      itemBuilder: (context, index) {
+        final product = _filteredProducts[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailScreen(
+                  name: product.name,
+                  imageUrl: product.imageUrl,
+                  price: product.price,
+                  rating: product.rating,
+                ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Card(
+              elevation: 3,
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(8.0),
+                leading: Image.network(
+                  product.imageUrl,
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+                title: Text(product.name, style: TextStyle(fontSize: 14)),
+                subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
