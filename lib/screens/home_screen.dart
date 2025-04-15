@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav.dart';
+import 'product_detail_screen.dart'; // <-- Make sure this import is correct
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -93,7 +94,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             GridView.count(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               crossAxisCount: 2,
               mainAxisSpacing: 10,
@@ -101,25 +102,37 @@ class HomeScreen extends StatelessWidget {
               childAspectRatio: 3 / 4,
               children: [
                 _buildProductCard(
-                    'Fresh Carrots',
-                    'https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-                    1.99,
-                    4.5),
+                  context,
+                  name: 'Fresh Carrots',
+                  imageUrl:
+                  'https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg',
+                  price: 1.99,
+                  rating: 4.5,
+                ),
                 _buildProductCard(
-                    'Organic Tomatoes',
-                    'https://images.pexels.com/photos/1367242/pexels-photo-1367242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-                    2.49,
-                    4.8),
+                  context,
+                  name: 'Organic Tomatoes',
+                  imageUrl:
+                  'https://images.pexels.com/photos/1367242/pexels-photo-1367242.jpeg',
+                  price: 2.49,
+                  rating: 4.8,
+                ),
                 _buildProductCard(
-                    'Fresh Onions',
-                    'https://images.pexels.com/photos/175414/pexels-photo-175414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-                    1.29,
-                    4.6),
+                  context,
+                  name: 'Fresh Onions',
+                  imageUrl:
+                  'https://images.pexels.com/photos/175414/pexels-photo-175414.jpeg',
+                  price: 1.29,
+                  rating: 4.6,
+                ),
                 _buildProductCard(
-                    'Fresh Potatoes',
-                    'https://images.pexels.com/photos/144248/potatoes-vegetables-erdfrucht-bio-144248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-                    1.59,
-                    4.7),
+                  context,
+                  name: 'Fresh Potatoes',
+                  imageUrl:
+                  'https://images.pexels.com/photos/144248/potatoes-vegetables-erdfrucht-bio-144248.jpeg',
+                  price: 1.59,
+                  rating: 4.7,
+                ),
               ],
             ),
           ],
@@ -129,11 +142,25 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(
-      String name, String imageUrl, double price, double rating) {
+  Widget _buildProductCard(BuildContext context,
+      {required String name,
+        required String imageUrl,
+        required double price,
+        required double rating}) {
     return GestureDetector(
       onTap: () {
-        // Navigate to product detail screen
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (_, __, ___) => ProductDetailScreen(
+              name: name,
+              imageUrl: imageUrl,
+              price: price,
+              rating: rating,
+            ),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -143,13 +170,17 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                imageUrl,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Hero(
+              tag: imageUrl,
+              child: ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Image.network(
+                  imageUrl,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
@@ -158,18 +189,19 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name,
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  SizedBox(height: 4),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
                   Text('\$${price.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 14, color: Colors.green)),
-                  SizedBox(height: 4),
+                      style:
+                      const TextStyle(fontSize: 14, color: Colors.green)),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.star, color: Colors.orange, size: 16),
-                      SizedBox(width: 4),
+                      const Icon(Icons.star, color: Colors.orange, size: 16),
+                      const SizedBox(width: 4),
                       Text(rating.toString(),
-                          style: TextStyle(fontSize: 14)),
+                          style: const TextStyle(fontSize: 14)),
                     ],
                   ),
                 ],
