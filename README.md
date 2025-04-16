@@ -37,7 +37,7 @@
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/agrokart-bd.git
+git clone https://github.com/tanvir-talha058/agrokart-bd.git
 cd agrokart-bd
 flutter pub get
 flutter run
