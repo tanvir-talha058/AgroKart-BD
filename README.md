@@ -14,6 +14,7 @@
 - 💬 **Blog Detail Pages** – Expandable for full article reading (planned).
 - 🌐 **Responsive UI** – Works across Android & iOS devices.
 
+
 ---
 
 ## 🧱 Tech Stack
